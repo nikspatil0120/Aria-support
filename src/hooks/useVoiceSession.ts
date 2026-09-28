@@ -41,6 +41,7 @@ export function useVoiceSession(): VoiceSession {
 
   const endCall = useCallback(async () => {
     clearSequence();
+    setTranscript(demonstrationTranscript);
     setState("disconnected");
   }, [clearSequence]);
 
