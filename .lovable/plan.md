@@ -12,16 +12,20 @@ Build a polished, frontend-only customer support application where customers can
 - Transition to a structured call summary after ending the demonstration flow, including the full transcript.
 
 ## Interaction
-- Use a transparent demonstration sequence so the interface visibly cycles through connection and conversation states without presenting it as a real voice service.
-- Keep all voice behavior behind a dedicated hook so a real service can replace it later.
-- Keep order lookup and call-summary access behind typed frontend interfaces with no network calls, credentials, storage, or server work.
+- Use a clearly labelled demonstration sequence so the interface visibly cycles through connecting, listening, thinking, and speaking without presenting fabricated responses as a live service.
+- Define `VoiceSessionState` and a `VoiceSession` contract exposing state, connection status, mute status, transcript, error, and start/end/mute/unmute methods; keep all demonstration behavior behind `useVoiceSession` so a future provider can replace it without UI restructuring.
+- Keep transcript rendering independent from the voice implementation and announce connecting, listening, thinking, speaking, and error changes through an accessible live region.
+- Keep order lookup and call-summary access behind typed frontend interfaces with no network calls, credentials, storage, server work, authentication, or external providers.
 
 ## Structure
-- Define strict TypeScript models for voice state, microphone state, messages, orders, and summaries.
-- Keep orders, conversation content, and summary content in separate mock-data modules.
+- Define strict TypeScript models for voice state, microphone state, `TranscriptMessage`, exact `CallSummary` fields, orders, and summaries.
+- Keep the three exact supplied orders in one typed mock module, with conversation and summary content in separate mock-data modules.
 - Build focused components for Aria's identity, controls, conversation, order details, help actions, errors, and summary.
 - Use established transcript/message primitives where appropriate, customized to the Aura Skincare design.
+- Add a typed `api.ts` boundary that reads demonstration data without making network requests, ensuring UI components do not import mock order or summary data directly.
 
 ## Quality checks
-- Verify required branding, copy, order data, states, focus behavior, reduced-motion behavior, and metadata.
-- Check the finished screen at desktop and mobile sizes, exercise start/mute/end/order-details flows, and confirm the project remains error-free.
+- Verify required branding, exact order copy, all voice and error states, transcript and summary rendering, focus behavior, reduced-motion behavior, and metadata.
+- Check the finished screen at desktop and mobile sizes; exercise start, mute, unmute, end, retry, keyboard navigation, and order-detail flows; confirm successful build, type safety, and clean browser console.
+- Search the entire project for every prohibited external-brand and hiring-related term and remove all occurrences, including existing documentation, comments, metadata, and placeholders.
+- Do not add login, accounts, payments, checkout, dashboards, administrative tools, or any server-side functionality.
