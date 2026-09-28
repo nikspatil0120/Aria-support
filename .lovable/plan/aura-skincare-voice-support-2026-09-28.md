@@ -27,5 +27,5 @@ Build a polished, frontend-only customer support application where customers can
 ## Quality checks
 - Verify required branding, exact order copy, all voice and error states, transcript and summary rendering, focus behavior, reduced-motion behavior, and metadata.
 - Check the finished screen at desktop and mobile sizes; exercise start, mute, unmute, end, retry, keyboard navigation, and order-detail flows; confirm successful build, type safety, and clean browser console.
-- Search the entire project for every prohibited external-brand and hiring-related term and remove all occurrences, including existing documentation, comments, metadata, and placeholders.
+- Search the entire project for prohibited terms and remove all occurrences, including existing documentation, comments, metadata, and placeholders.
 - Do not add login, accounts, payments, checkout, dashboards, administrative tools, or any server-side functionality.

@@ -59,29 +59,50 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-avatar: var(--avatar);
+  --color-avatar-foreground: var(--avatar-foreground);
+  --color-avatar-ring: var(--avatar-ring);
+  --color-online: var(--online);
+  --color-status: var(--status);
+  --color-status-foreground: var(--status-foreground);
+  --color-call-end: var(--call-end);
+  --color-call-end-foreground: var(--call-end-foreground);
+  --font-display: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Manrope", sans-serif;
+  --shadow-soft: 0 8px 30px color-mix(in oklab, var(--foreground) 6%, transparent);
+  --shadow-card: 0 18px 55px color-mix(in oklab, var(--foreground) 10%, transparent);
+  --shadow-avatar: 0 18px 45px color-mix(in oklab, var(--primary) 22%, transparent);
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
+  --radius: 0.5rem;
+  --background: oklch(0.975 0.012 85);
+  --foreground: oklch(0.24 0.018 73);
+  --card: oklch(0.995 0.006 84);
+  --card-foreground: oklch(0.24 0.018 73);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
+  --primary: oklch(0.43 0.08 145);
+  --primary-foreground: oklch(0.98 0.008 90);
+  --secondary: oklch(0.91 0.035 104);
+  --secondary-foreground: oklch(0.32 0.055 139);
+  --muted: oklch(0.95 0.014 83);
+  --muted-foreground: oklch(0.52 0.025 79);
+  --accent: oklch(0.88 0.045 42);
+  --accent-foreground: oklch(0.3 0.03 54);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
+  --border: oklch(0.88 0.025 83);
+  --input: oklch(0.88 0.025 83);
+  --ring: oklch(0.48 0.08 145);
+  --avatar: oklch(0.37 0.07 144);
+  --avatar-foreground: oklch(0.96 0.02 100);
+  --avatar-ring: oklch(0.61 0.085 144 / 45%);
+  --online: oklch(0.64 0.16 145);
+  --status: oklch(0.91 0.06 95);
+  --status-foreground: oklch(0.35 0.06 108);
+  --call-end: oklch(0.53 0.16 28);
+  --call-end-foreground: oklch(0.98 0.008 90);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -140,5 +161,62 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-sans);
+    letter-spacing: 0;
+    overflow-x: hidden;
+  }
+
+  button,
+  a {
+    outline-offset: 3px;
+  }
+}
+
+@utility bg-hero-overlay {
+  background: linear-gradient(
+    90deg,
+    color-mix(in oklab, var(--card) 95%, transparent) 0%,
+    color-mix(in oklab, var(--card) 84%, transparent) 54%,
+    color-mix(in oklab, var(--card) 62%, transparent) 100%
+  );
+}
+
+@utility animate-soft-pulse {
+  animation: soft-pulse 2.2s ease-in-out infinite;
+}
+@utility animate-wave {
+  animation: wave 1.5s ease-in-out infinite;
+}
+@utility animate-equalizer {
+  animation: equalizer 0.85s ease-in-out infinite alternate;
+}
+
+@keyframes soft-pulse {
+  50% {
+    transform: scale(1.05);
+    opacity: 0.5;
+  }
+}
+@keyframes wave {
+  50% {
+    transform: scale(0.94);
+    opacity: 0.65;
+  }
+}
+@keyframes equalizer {
+  to {
+    transform: scaleY(0.45);
+    opacity: 0.55;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
   }
 }
