@@ -3,7 +3,6 @@ import { demonstrationTranscript } from "@/data/mockConversation";
 import type { TranscriptMessage, VoiceSession, VoiceSessionState } from "@/types/support";
 
 const sequence: Array<{ state: VoiceSessionState; delay: number; messages: number }> = [
-  { state: "connecting", delay: 900, messages: 0 },
   { state: "listening", delay: 1800, messages: 2 },
   { state: "thinking", delay: 1600, messages: 3 },
   { state: "speaking", delay: 2400, messages: 4 },
@@ -25,6 +24,7 @@ export function useVoiceSession(): VoiceSession {
 
   const startCall = useCallback(async () => {
     clearSequence();
+    setState("connecting");
     setIsMuted(false);
     setTranscript([]);
     let elapsed = 0;

@@ -205,6 +205,7 @@ function Index() {
                           className="h-12 rounded-full px-5"
                           onClick={voice.isMuted ? voice.unmute : voice.mute}
                           aria-label={voice.isMuted ? "Unmute microphone" : "Mute microphone"}
+                          aria-pressed={voice.isMuted}
                         >
                           {voice.isMuted ? <MicOff /> : <Mic />}
                           {voice.isMuted ? "Unmute" : "Mute"}
@@ -233,9 +234,10 @@ function Index() {
             </h2>
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
               {helpItems.map(({ icon: Icon, title, text }) => (
-                <button
+                <Button
                   key={title}
-                  className="group flex min-h-28 items-start gap-4 rounded-lg border border-border bg-card p-4 text-left shadow-soft transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  variant="outline"
+                  className="group flex h-auto min-h-28 items-start justify-start gap-4 whitespace-normal rounded-lg border-border bg-card p-4 text-left shadow-soft transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:bg-card hover:shadow-card"
                   onClick={start}
                   aria-label={`Start with ${title}`}
                 >
@@ -248,7 +250,7 @@ function Index() {
                       {text}
                     </span>
                   </span>
-                </button>
+                </Button>
               ))}
             </div>
           </section>
