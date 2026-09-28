@@ -166,21 +166,57 @@
     overflow-x: hidden;
   }
 
-  button, a { outline-offset: 3px; }
+  button,
+  a {
+    outline-offset: 3px;
+  }
 }
 
 @utility bg-hero-overlay {
-  background: linear-gradient(90deg, color-mix(in oklab, var(--card) 95%, transparent) 0%, color-mix(in oklab, var(--card) 84%, transparent) 54%, color-mix(in oklab, var(--card) 62%, transparent) 100%);
+  background: linear-gradient(
+    90deg,
+    color-mix(in oklab, var(--card) 95%, transparent) 0%,
+    color-mix(in oklab, var(--card) 84%, transparent) 54%,
+    color-mix(in oklab, var(--card) 62%, transparent) 100%
+  );
 }
 
-@utility animate-soft-pulse { animation: soft-pulse 2.2s ease-in-out infinite; }
-@utility animate-wave { animation: wave 1.5s ease-in-out infinite; }
-@utility animate-equalizer { animation: equalizer .85s ease-in-out infinite alternate; }
+@utility animate-soft-pulse {
+  animation: soft-pulse 2.2s ease-in-out infinite;
+}
+@utility animate-wave {
+  animation: wave 1.5s ease-in-out infinite;
+}
+@utility animate-equalizer {
+  animation: equalizer 0.85s ease-in-out infinite alternate;
+}
 
-@keyframes soft-pulse { 50% { transform: scale(1.05); opacity: .5; } }
-@keyframes wave { 50% { transform: scale(.94); opacity: .65; } }
-@keyframes equalizer { to { transform: scaleY(.45); opacity: .55; } }
+@keyframes soft-pulse {
+  50% {
+    transform: scale(1.05);
+    opacity: 0.5;
+  }
+}
+@keyframes wave {
+  50% {
+    transform: scale(0.94);
+    opacity: 0.65;
+  }
+}
+@keyframes equalizer {
+  to {
+    transform: scaleY(0.45);
+    opacity: 0.55;
+  }
+}
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }

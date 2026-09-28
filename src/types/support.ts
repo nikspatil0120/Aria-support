@@ -1,11 +1,5 @@
 export type VoiceSessionState =
-  | "idle"
-  | "connecting"
-  | "listening"
-  | "thinking"
-  | "speaking"
-  | "disconnected"
-  | "error";
+  "idle" | "connecting" | "listening" | "thinking" | "speaking" | "disconnected" | "error";
 
 export type MicrophoneState = "ready" | "active" | "permission-required" | "unavailable" | "muted";
 
