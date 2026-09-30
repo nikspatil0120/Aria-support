@@ -1,5 +1,4 @@
-import { CheckCircle2, Clock3, FileText, Package } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { CheckCircle2, Clock3, FileText, Package, Phone, Sparkles } from "lucide-react";
 import type { CallSummary, TranscriptMessage } from "@/types/support";
 
 export function CallSummaryView({
@@ -14,69 +13,118 @@ export function CallSummaryView({
   const duration = summary.duration_seconds
     ? `${Math.floor(summary.duration_seconds / 60)}m ${summary.duration_seconds % 60}s`
     : "—";
+
   return (
     <section
-      className="rounded-lg border border-border bg-card p-5 shadow-soft sm:p-7"
+      className="overflow-hidden rounded-2xl border border-border/50 bg-card shadow-luxury animate-scale-in"
       aria-labelledby="summary-title"
     >
-      <div className="flex flex-col gap-4 border-b border-border pb-6 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-xs font-semibold uppercase text-muted-foreground">
-            Conversation complete
-          </p>
-          <h2 id="summary-title" className="mt-1 font-display text-4xl text-foreground">
-            Call summary
-          </h2>
-        </div>
-        <Button variant="outline" onClick={onNewCall}>
-          Start a new call
-        </Button>
-      </div>
-      <div className="grid gap-3 py-6 sm:grid-cols-2 lg:grid-cols-4">
-        <SummaryDetail icon={FileText} label="Customer intent" value={summary.customer_intent} />
-        <SummaryDetail icon={Package} label="Order ID" value={summary.order_id ?? "Not provided"} />
-        <SummaryDetail icon={CheckCircle2} label="Resolution" value={summary.resolution_status} />
-        <SummaryDetail icon={Clock3} label="Duration" value={duration} />
-      </div>
-      <div className="rounded-md bg-muted p-5">
-        <p className="text-xs font-semibold uppercase text-muted-foreground">Summary</p>
-        <p className="mt-2 leading-7 text-foreground">{summary.call_summary}</p>
-      </div>
-      <div className="mt-6">
-        <h3 className="font-display text-2xl">Conversation transcript</h3>
-        <div className="mt-3 grid gap-3">
-          {transcript.map((message) => (
-            <div key={message.id} className="flex gap-3 border-b border-border py-3 last:border-0">
-              <span className="w-14 shrink-0 text-xs font-semibold uppercase text-muted-foreground">
-                {message.speaker === "customer"
-                  ? "You"
-                  : message.speaker === "agent"
-                    ? "Aria"
-                    : "Note"}
-              </span>
-              <p className="text-sm leading-6 text-foreground">{message.text}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
+      {/* Hero header */}
+      <div
+        className="relative overflow-hidden px-7 py-8 sm:px-10"
+        style={{
+          background: "linear-gradient(135deg, color-mix(in oklab, var(--primary) 6%, var(--card)) 0%, color-mix(in oklab, var(--primary) 2%, var(--card)) 100%)",
+          borderBottom: "1px solid color-mix(in oklab, var(--border) 55%, transparent)",
+        }}
+      >
+        {/* Decorative glow */}
+        <div
+          className="absolute -right-16 -top-16 size-48 rounded-full blur-3xl pointer-events-none opacity-40"
+          style={{ background: "color-mix(in oklab, var(--primary) 15%, transparent)" }}
+        />
 
-function SummaryDetail({
-  icon: Icon,
-  label,
-  value,
-}: {
-  icon: typeof FileText;
-  label: string;
-  value: string;
-}) {
-  return (
-    <div className="rounded-md border border-border p-4">
-      <Icon className="size-5 text-primary" />
-      <p className="mt-4 text-xs text-muted-foreground">{label}</p>
-      <p className="mt-1 font-semibold text-foreground">{value}</p>
-    </div>
+        <div className="relative flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/8 px-3 py-1">
+              <CheckCircle2 className="size-3 text-primary" />
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">
+                Session complete
+              </span>
+            </div>
+            <h2 id="summary-title" className="font-display text-4xl sm:text-5xl text-foreground">
+              Call Summary
+            </h2>
+            <p className="mt-1.5 text-sm text-muted-foreground">
+              Here's what Aria resolved for you today
+            </p>
+          </div>
+
+          <button
+            onClick={onNewCall}
+            className="flex items-center gap-2.5 self-start rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground shadow-[0_4px_20px_color-mix(in_oklab,var(--primary)_28%,transparent)] transition-all hover:scale-[1.03] hover:shadow-[0_6px_28px_color-mix(in_oklab,var(--primary)_35%,transparent)] active:scale-[0.97] sm:self-auto"
+          >
+            <Phone className="size-3.5" />
+            New call
+          </button>
+        </div>
+      </div>
+
+      {/* Stats grid */}
+      <div className="grid gap-3 p-6 sm:grid-cols-2 lg:grid-cols-4">
+        {[
+          { icon: FileText,    label: "Intent",     value: summary.customer_intent },
+          { icon: Package,     label: "Order",       value: summary.order_id ?? "Not mentioned" },
+          { icon: CheckCircle2,label: "Resolution",  value: summary.resolution_status },
+          { icon: Clock3,      label: "Duration",    value: duration },
+        ].map(({ icon: Icon, label, value }) => (
+          <div
+            key={label}
+            className="rounded-xl border border-border/40 p-4 transition-all hover:border-primary/20 hover:shadow-soft"
+            style={{ background: "color-mix(in oklab, var(--muted) 50%, var(--card))" }}
+          >
+            <div
+              className="mb-3 grid size-9 place-items-center rounded-lg text-primary ring-1 ring-primary/15"
+              style={{ background: "color-mix(in oklab, var(--primary) 9%, var(--secondary))" }}
+            >
+              <Icon className="size-4" />
+            </div>
+            <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground">{label}</p>
+            <p className="mt-1 text-sm font-semibold text-foreground leading-snug">{value}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Summary text */}
+      <div className="mx-6 mb-6 rounded-xl border border-border/30 p-5"
+        style={{ background: "color-mix(in oklab, var(--primary) 3%, var(--muted))" }}
+      >
+        <div className="mb-2 flex items-center gap-2">
+          <Sparkles className="size-3.5 text-primary" />
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
+            Summary
+          </p>
+        </div>
+        <p className="text-sm leading-7 text-foreground">{summary.call_summary}</p>
+      </div>
+
+      {/* Transcript */}
+      {transcript.length > 0 && (
+        <div className="border-t border-border/40 px-6 py-6">
+          <h3 className="mb-4 font-display text-2xl">Transcript</h3>
+          <div className="flex flex-col gap-1">
+            {transcript
+              .filter((m) => m.speaker !== "system")
+              .map((msg) => {
+                const isUser = msg.speaker === "customer";
+                return (
+                  <div
+                    key={msg.id}
+                    className={`flex gap-3 py-2.5 border-b border-border/25 last:border-0 ${isUser ? "" : ""}`}
+                  >
+                    <span
+                      className={`w-10 shrink-0 text-[10px] font-bold uppercase tracking-widest pt-0.5 ${
+                        isUser ? "text-primary" : "text-muted-foreground"
+                      }`}
+                    >
+                      {isUser ? "You" : "Aria"}
+                    </span>
+                    <p className="text-sm leading-6 text-foreground">{msg.text}</p>
+                  </div>
+                );
+              })}
+          </div>
+        </div>
+      )}
+    </section>
   );
 }

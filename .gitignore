@@ -7,6 +7,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies
 node_modules
 dist
 dist-ssr
@@ -16,9 +17,49 @@ dist-ssr
 .nitro
 *.local
 
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+backend/venv/
+backend/.venv/
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Backend
+backend/.env
+backend/aura_support.db
+backend/aura_support.db-shm
+backend/aura_support.db-wal
+backend/*.log
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.development
+
+# Model files (Piper, ONNX, etc.)
+*.onnx
+*.onnx.json
+piper/
+*.pth
+*.bin
+*.pkl
+
 # Wrangler / Cloudflare
 .wrangler/
 .dev.vars
+
+# Deployment
+.vercel
 
 # Editor directories and files
 .vscode/*
@@ -30,3 +71,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Development artifacts
+.lovable/
+claude/

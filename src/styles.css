@@ -4,20 +4,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/*
- * Design system definition.
- *
- * The @theme inline block maps CSS custom properties to Tailwind utility
- * classes (e.g. --color-primary -> bg-primary, text-primary).
- *
- * The :root and .dark blocks define the actual color values using oklch.
- * All colors MUST use oklch format.
- *
- * To add a new semantic color:
- * 1. Add the variable to :root (light value) and .dark (dark value)
- * 2. Register it in @theme inline as --color-<name>: var(--<name>)
- */
-
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -67,47 +53,78 @@
   --color-status-foreground: var(--status-foreground);
   --color-call-end: var(--call-end);
   --color-call-end-foreground: var(--call-end-foreground);
+  --color-gold: var(--gold);
+  --color-gold-foreground: var(--gold-foreground);
   --font-display: "Cormorant Garamond", Georgia, serif;
   --font-sans: "Manrope", sans-serif;
-  --shadow-soft: 0 8px 30px color-mix(in oklab, var(--foreground) 6%, transparent);
-  --shadow-card: 0 18px 55px color-mix(in oklab, var(--foreground) 10%, transparent);
-  --shadow-avatar: 0 18px 45px color-mix(in oklab, var(--primary) 22%, transparent);
+  --shadow-soft: 0 4px 24px color-mix(in oklab, var(--foreground) 5%, transparent);
+  --shadow-card: 0 12px 48px color-mix(in oklab, var(--foreground) 9%, transparent);
+  --shadow-avatar: 0 20px 60px color-mix(in oklab, var(--primary) 25%, transparent);
+  --shadow-glass: 0 8px 32px color-mix(in oklab, var(--foreground) 7%, transparent),
+                  inset 0 1px 0 color-mix(in oklab, white 14%, transparent);
+  --shadow-glow: 0 0 80px color-mix(in oklab, var(--primary) 20%, transparent),
+                 0 0 160px color-mix(in oklab, var(--primary) 8%, transparent);
+  --shadow-luxury: 0 24px 64px color-mix(in oklab, var(--foreground) 12%, transparent),
+                   0 4px 12px color-mix(in oklab, var(--foreground) 6%, transparent);
 }
 
 :root {
-  --radius: 0.5rem;
-  --background: oklch(0.975 0.012 85);
-  --foreground: oklch(0.24 0.018 73);
-  --card: oklch(0.995 0.006 84);
-  --card-foreground: oklch(0.24 0.018 73);
+  --radius: 0.875rem;
+
+  /* Base palette — warm ivory / sage */
+  --background: oklch(0.974 0.007 80);
+  --foreground: oklch(0.20 0.020 72);
+
+  --card: oklch(0.998 0.003 82);
+  --card-foreground: oklch(0.20 0.020 72);
+
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.43 0.08 145);
-  --primary-foreground: oklch(0.98 0.008 90);
-  --secondary: oklch(0.91 0.035 104);
-  --secondary-foreground: oklch(0.32 0.055 139);
-  --muted: oklch(0.95 0.014 83);
-  --muted-foreground: oklch(0.52 0.025 79);
-  --accent: oklch(0.88 0.045 42);
-  --accent-foreground: oklch(0.3 0.03 54);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.88 0.025 83);
-  --input: oklch(0.88 0.025 83);
-  --ring: oklch(0.48 0.08 145);
-  --avatar: oklch(0.37 0.07 144);
-  --avatar-foreground: oklch(0.96 0.02 100);
-  --avatar-ring: oklch(0.61 0.085 144 / 45%);
-  --online: oklch(0.64 0.16 145);
-  --status: oklch(0.91 0.06 95);
-  --status-foreground: oklch(0.35 0.06 108);
-  --call-end: oklch(0.53 0.16 28);
-  --call-end-foreground: oklch(0.98 0.008 90);
+  --popover-foreground: oklch(0.20 0.020 72);
+
+  /* Primary — deep botanical sage */
+  --primary: oklch(0.40 0.094 150);
+  --primary-foreground: oklch(0.97 0.008 90);
+
+  --secondary: oklch(0.92 0.030 106);
+  --secondary-foreground: oklch(0.30 0.060 142);
+
+  --muted: oklch(0.955 0.010 82);
+  --muted-foreground: oklch(0.50 0.022 76);
+
+  --accent: oklch(0.875 0.048 44);
+  --accent-foreground: oklch(0.28 0.035 52);
+
+  --destructive: oklch(0.560 0.240 27);
+  --destructive-foreground: oklch(0.98 0.006 90);
+
+  --border: oklch(0.895 0.016 80);
+  --input: oklch(0.895 0.016 80);
+  --ring: oklch(0.45 0.090 150);
+
+  /* Avatar */
+  --avatar: oklch(0.36 0.075 146);
+  --avatar-foreground: oklch(0.95 0.022 100);
+  --avatar-ring: oklch(0.60 0.088 146 / 40%);
+
+  /* Status indicators */
+  --online: oklch(0.62 0.168 148);
+  --status: oklch(0.91 0.055 98);
+  --status-foreground: oklch(0.34 0.060 110);
+  --call-end: oklch(0.52 0.168 26);
+  --call-end-foreground: oklch(0.97 0.008 90);
+
+  /* Gold accent for luxury touches */
+  --gold: oklch(0.75 0.120 72);
+  --gold-foreground: oklch(0.25 0.040 68);
+
+  /* Charts */
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
+
+  /* Sidebar */
   --sidebar: oklch(0.984 0.003 247.858);
   --sidebar-foreground: oklch(0.129 0.042 264.695);
   --sidebar-primary: oklch(0.208 0.042 265.755);
@@ -138,6 +155,8 @@
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.551 0.027 264.364);
+  --gold: oklch(0.78 0.110 72);
+  --gold-foreground: oklch(0.22 0.036 68);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
@@ -154,9 +173,7 @@
 }
 
 @layer base {
-  * {
-    border-color: var(--color-border);
-  }
+  * { border-color: var(--color-border); }
 
   body {
     background-color: var(--color-background);
@@ -164,56 +181,126 @@
     font-family: var(--font-sans);
     letter-spacing: 0;
     overflow-x: hidden;
+    /* Subtle grain texture */
+    background-image:
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
   }
 
-  button,
-  a {
-    outline-offset: 3px;
+  button, a { outline-offset: 3px; }
+
+  ::selection {
+    background-color: color-mix(in oklab, var(--primary) 20%, transparent);
   }
 }
+
+/* ── Utilities ──────────────────────────────────────────────────────────── */
 
 @utility bg-hero-overlay {
   background: linear-gradient(
-    90deg,
-    color-mix(in oklab, var(--card) 95%, transparent) 0%,
-    color-mix(in oklab, var(--card) 84%, transparent) 54%,
-    color-mix(in oklab, var(--card) 62%, transparent) 100%
+    115deg,
+    color-mix(in oklab, var(--card) 96%, transparent) 0%,
+    color-mix(in oklab, var(--card) 78%, transparent) 45%,
+    color-mix(in oklab, var(--card) 35%, transparent) 100%
   );
 }
 
+@utility glass {
+  background: color-mix(in oklab, var(--card) 75%, transparent);
+  backdrop-filter: blur(24px) saturate(1.6) brightness(1.02);
+  -webkit-backdrop-filter: blur(24px) saturate(1.6) brightness(1.02);
+  border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+}
+
+@utility shimmer-text {
+  background: linear-gradient(
+    90deg,
+    var(--color-foreground) 0%,
+    var(--color-primary) 50%,
+    var(--color-foreground) 100%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer-text 4s linear infinite;
+}
+
+/* ── Animations ─────────────────────────────────────────────────────────── */
+
 @utility animate-soft-pulse {
-  animation: soft-pulse 2.2s ease-in-out infinite;
+  animation: soft-pulse 2.4s ease-in-out infinite;
 }
 @utility animate-wave {
-  animation: wave 1.5s ease-in-out infinite;
+  animation: wave 1.6s ease-in-out infinite;
 }
 @utility animate-equalizer {
-  animation: equalizer 0.85s ease-in-out infinite alternate;
+  animation: equalizer 0.9s ease-in-out infinite alternate;
+}
+@utility animate-float {
+  animation: float 7s ease-in-out infinite;
+}
+@utility animate-glow-pulse {
+  animation: glow-pulse 4s ease-in-out infinite;
+}
+@utility animate-fade-up {
+  animation: fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@utility animate-scale-in {
+  animation: scale-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@utility animate-shimmer-bg {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in oklab, var(--primary) 8%, transparent) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer-bg 2.5s linear infinite;
 }
 
 @keyframes soft-pulse {
-  50% {
-    transform: scale(1.05);
-    opacity: 0.5;
-  }
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.04); opacity: 0.6; }
 }
 @keyframes wave {
-  50% {
-    transform: scale(0.94);
-    opacity: 0.65;
-  }
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(0.93); opacity: 0.5; }
 }
 @keyframes equalizer {
-  to {
-    transform: scaleY(0.45);
-    opacity: 0.55;
-  }
+  to { transform: scaleY(0.3); opacity: 0.4; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-6px) rotate(0.5deg); }
+  66% { transform: translateY(-3px) rotate(-0.5deg); }
+}
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.65; transform: scale(1.1); }
+}
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes shimmer-text {
+  to { background-position: 200% center; }
+}
+@keyframes shimmer-bg {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+@keyframes orbit {
+  from { transform: rotate(0deg) translateX(52px) rotate(0deg); }
+  to { transform: rotate(360deg) translateX(52px) rotate(-360deg); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;

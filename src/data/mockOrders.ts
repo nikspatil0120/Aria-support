@@ -10,6 +10,7 @@ export const mockOrders: Order[] = [
     carrier: "BlueDart",
     trackingId: "BD-982103",
     timing: "Expected by 6 PM today",
+    expectedDelivery: "6 PM today",
   },
   {
     id: "ORD-102",
@@ -20,6 +21,7 @@ export const mockOrders: Order[] = [
     carrier: "Delhivery",
     trackingId: "DL-441029",
     timing: "Delivered 14 days ago",
+    deliveredDate: "14 days ago",
   },
   {
     id: "ORD-103",
@@ -28,6 +30,8 @@ export const mockOrders: Order[] = [
     price: "₹850",
     status: "Processing",
     timing: "Ordered 3 hours ago",
+    orderTime: "3 hours ago",
+    cancellationEligible: true,
     note: "Eligible for cancellation",
   },
 ];

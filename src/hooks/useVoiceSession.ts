@@ -1,6 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { demonstrationTranscript } from "@/data/mockConversation";
 import type { TranscriptMessage, VoiceSession, VoiceSessionState } from "@/types/support";
+import { config } from "@/lib/config";
+import { useVoiceSessionReal } from "./useVoiceSessionReal";
+
+/**
+ * Voice session hook with mock/real mode switching.
+ * 
+ * When VITE_ENABLE_REAL_VOICE=true, uses LiveKit.
+ * Otherwise, uses mock demonstration mode.
+ */
 
 const sequence: Array<{ state: VoiceSessionState; delay: number; messages: number }> = [
   { state: "listening", delay: 1800, messages: 2 },
@@ -9,7 +18,7 @@ const sequence: Array<{ state: VoiceSessionState; delay: number; messages: numbe
   { state: "listening", delay: 0, messages: 4 },
 ];
 
-export function useVoiceSession(): VoiceSession {
+function useVoiceSessionMock(): VoiceSession {
   const [state, setState] = useState<VoiceSessionState>("idle");
   const [isMuted, setIsMuted] = useState(false);
   const [transcript, setTranscript] = useState<TranscriptMessage[]>([]);
@@ -55,4 +64,12 @@ export function useVoiceSession(): VoiceSession {
     unmute: () => setIsMuted(false),
     transcript,
   };
+}
+
+export function useVoiceSession(): VoiceSession {
+  // Switch between mock and real implementation based on config
+  const mockSession = useVoiceSessionMock();
+  const realSession = useVoiceSessionReal();
+
+  return config.enableRealVoice ? realSession : mockSession;
 }
