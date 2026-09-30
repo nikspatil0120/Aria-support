@@ -1,12 +1,16 @@
 services:
+  # ═══════════════════════════════════════════════════════════════════
+  # FastAPI Web Service (API endpoints only - lighter, ~200MB RAM)
+  # ═══════════════════════════════════════════════════════════════════
   - type: web
-    name: aura-aria-support
+    name: aura-aria-api
     env: docker
     region: singapore
     plan: free
     branch: main
     dockerfilePath: ./backend/Dockerfile
     dockerContext: ./backend
+    dockerCommand: ./start_api_only.sh
     healthCheckPath: /api/health
     envVars:
       - key: PORT
@@ -23,6 +27,34 @@ services:
         value: sqlite+aiosqlite:///./aura_support.db
       - key: FRONTEND_ORIGIN
         sync: false
+      - key: LOG_LEVEL
+        value: INFO
+
+  # ═══════════════════════════════════════════════════════════════════
+  # LiveKit Agent Background Worker (voice processing - ~400MB RAM)
+  # ═══════════════════════════════════════════════════════════════════
+  - type: worker
+    name: aura-aria-agent
+    env: docker
+    region: singapore
+    plan: free
+    branch: main
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    dockerCommand: ./start_agent_only.sh
+    envVars:
+      - key: LIVEKIT_URL
+        sync: false
+      - key: LIVEKIT_API_KEY
+        sync: false
+      - key: LIVEKIT_API_SECRET
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GOOGLE_API_KEY
+        sync: false
+      - key: DATABASE_URL
+        value: sqlite+aiosqlite:///./aura_support.db
       - key: GROQ_STT_MODEL
         value: whisper-large-v3-turbo
       - key: GROQ_LLM_MODEL

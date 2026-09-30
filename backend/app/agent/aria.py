@@ -591,11 +591,11 @@ if __name__ == "__main__":
     cli.run_app(
         WorkerOptions(
             entrypoint_fnc=entrypoint,
-            prewarm_fnc=prewarm,
+            # prewarm_fnc=prewarm,  # DISABLED: Save memory on Render free tier
             api_key=settings.livekit_api_key,
             api_secret=settings.livekit_api_secret,
             ws_url=settings.livekit_url,
             port=8090,
-            num_idle_processes=1,  # Render free tier: 512MB RAM limit
+            num_idle_processes=0,  # CHANGED: Don't pre-spawn processes (saves ~200MB)
         )
     )
