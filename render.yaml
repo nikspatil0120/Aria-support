@@ -1,48 +1,14 @@
 services:
-  # ═══════════════════════════════════════════════════════════════════
-  # FastAPI Web Service (API endpoints only - lighter, ~200MB RAM)
-  # ═══════════════════════════════════════════════════════════════════
   - type: web
-    name: aura-aria-api
-    env: docker
-    region: singapore
-    plan: free
-    branch: main
-    dockerfilePath: ./backend/Dockerfile
-    dockerContext: ./backend
-    dockerCommand: ./start_api_only.sh
-    healthCheckPath: /api/health
-    envVars:
-      - key: PORT
-        value: 10000
-      - key: LIVEKIT_URL
-        sync: false
-      - key: LIVEKIT_API_KEY
-        sync: false
-      - key: LIVEKIT_API_SECRET
-        sync: false
-      - key: GROQ_API_KEY
-        sync: false
-      - key: DATABASE_URL
-        value: sqlite+aiosqlite:///./aura_support.db
-      - key: FRONTEND_ORIGIN
-        sync: false
-      - key: LOG_LEVEL
-        value: INFO
-
-  # ═══════════════════════════════════════════════════════════════════
-  # LiveKit Agent Background Worker (voice processing - ~400MB RAM)
-  # ═══════════════════════════════════════════════════════════════════
-  - type: worker
     name: aura-aria-agent
-    env: docker
-    region: singapore
-    plan: free
-    branch: main
-    dockerfilePath: ./backend/Dockerfile
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile.agent
     dockerContext: ./backend
-    dockerCommand: ./start_agent_only.sh
+    plan: free
+    healthCheckPath: /
     envVars:
+      - key: DATABASE_URL
+        sync: false
       - key: LIVEKIT_URL
         sync: false
       - key: LIVEKIT_API_KEY
@@ -51,10 +17,6 @@ services:
         sync: false
       - key: GROQ_API_KEY
         sync: false
-      - key: GOOGLE_API_KEY
-        sync: false
-      - key: DATABASE_URL
-        value: sqlite+aiosqlite:///./aura_support.db
       - key: GROQ_STT_MODEL
         value: whisper-large-v3-turbo
       - key: GROQ_LLM_MODEL
@@ -63,5 +25,3 @@ services:
         value: en-IN-NeerjaNeural
       - key: TTS_RATE
         value: +8%
-      - key: LOG_LEVEL
-        value: INFO

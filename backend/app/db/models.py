@@ -1,5 +1,5 @@
 """SQLAlchemy database models."""
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 from sqlalchemy import String, Integer, Float, DateTime, Text, Boolean, Enum as SQLEnum
@@ -35,7 +35,7 @@ class Order(Base):
     delivered_date: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
     order_time: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
     cancellation_eligible: Mapped[bool] = mapped_column(Boolean, default=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
 
 class SessionStatus(str, enum.Enum):
@@ -53,11 +53,11 @@ class CallSession(Base):
 
     id: Mapped[str] = mapped_column(String(50), primary_key=True)
     livekit_room_name: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
-    started_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
-    ended_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+    started_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    ended_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     status: Mapped[SessionStatus] = mapped_column(SQLEnum(SessionStatus), default=SessionStatus.CREATED)
     duration_seconds: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
 
 class TranscriptMessage(Base):
@@ -68,7 +68,7 @@ class TranscriptMessage(Base):
     session_id: Mapped[str] = mapped_column(String(50), index=True)
     speaker: Mapped[str] = mapped_column(String(20))  # customer, agent, system
     text: Mapped[str] = mapped_column(Text)
-    timestamp: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    timestamp: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
 
 class IntentType(str, enum.Enum):
@@ -103,4 +103,4 @@ class CallSummary(Base):
     call_summary: Mapped[str] = mapped_column(Text)
     policy_used: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
     duration_seconds: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))

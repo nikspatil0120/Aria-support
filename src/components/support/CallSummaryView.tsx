@@ -1,4 +1,5 @@
-import { CheckCircle2, Clock3, FileText, Package, Phone, Sparkles } from "lucide-react";
+import { useState } from "react";
+import { CheckCircle2, Clock3, Copy, FileText, Package, Phone, Sparkles } from "lucide-react";
 import type { CallSummary, TranscriptMessage } from "@/types/support";
 
 export function CallSummaryView({
@@ -10,6 +11,7 @@ export function CallSummaryView({
   transcript: TranscriptMessage[];
   onNewCall: () => void;
 }) {
+  const [copied, setCopied] = useState(false);
   const duration = summary.duration_seconds
     ? `${Math.floor(summary.duration_seconds / 60)}m ${summary.duration_seconds % 60}s`
     : "—";
@@ -95,6 +97,19 @@ export function CallSummaryView({
           </p>
         </div>
         <p className="text-sm leading-7 text-foreground">{summary.call_summary}</p>
+        <button
+          type="button"
+          className="mt-4 inline-flex items-center gap-2 rounded-lg border border-border/50 px-3 py-2 text-xs font-semibold text-muted-foreground transition-colors hover:bg-muted/60"
+          onClick={() => {
+            void navigator.clipboard.writeText(JSON.stringify(summary, null, 2)).then(() => {
+              setCopied(true);
+              window.setTimeout(() => setCopied(false), 1500);
+            });
+          }}
+        >
+          <Copy className="size-3.5" />
+          {copied ? "Copied" : "Copy JSON"}
+        </button>
       </div>
 
       {/* Transcript */}

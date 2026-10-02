@@ -165,6 +165,15 @@ export async function getOrders(): Promise<Order[]> {
   }));
 }
 
+export async function resetDemoOrders(): Promise<void> {
+  if (!config.enableRealVoice) return;
+
+  const response = await fetch(`${API_BASE}/api/orders/reset`, { method: "POST" });
+  if (!response.ok) {
+    throw new Error(`Failed to reset orders: ${response.statusText}`);
+  }
+}
+
 export async function getOrderDetails(orderId: string): Promise<Order | undefined> {
   if (!config.enableRealVoice) {
     return mockOrders.find((order) => order.id === orderId);
@@ -229,7 +238,8 @@ export async function waitForBackendWakeup(maxAttempts: number = 20): Promise<bo
       return true;
     }
     console.log(`Backend wake-up attempt ${attempt}/${maxAttempts}...`);
-    await new Promise(resolve => setTimeout(resolve, 3000)); // Wait 3 seconds between attempts
+    const delay = Math.min(1000 * 2 ** (attempt - 1), 5000);
+    await new Promise(resolve => setTimeout(resolve, delay));
   }
   return false;
 }

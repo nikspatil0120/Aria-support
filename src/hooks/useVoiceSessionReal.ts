@@ -31,6 +31,7 @@ export function useVoiceSessionReal(): VoiceSession {
 
   const sessionIdRef = useRef<string | undefined>(undefined);
   const roomRef = useRef<Room | null>(null);
+  const agentJoinTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // Track connection-level state separately so we can gate agent state overrides
   const connectionStateRef = useRef<ConnectionStatus>("disconnected");
 
@@ -42,6 +43,7 @@ export function useVoiceSessionReal(): VoiceSession {
       if (roomRef.current) {
         void livekitService.disconnect();
       }
+      if (agentJoinTimerRef.current) clearTimeout(agentJoinTimerRef.current);
     };
   }, []);
 
@@ -72,6 +74,10 @@ export function useVoiceSessionReal(): VoiceSession {
 
     livekitService.onAgentConnected(() => {
       console.log("Aria agent connected to room");
+      if (agentJoinTimerRef.current) {
+        clearTimeout(agentJoinTimerRef.current);
+        agentJoinTimerRef.current = null;
+      }
     });
 
     livekitService.onAudioTrack(() => {
@@ -187,6 +193,9 @@ export function useVoiceSessionReal(): VoiceSession {
       });
 
       roomRef.current = room;
+      agentJoinTimerRef.current = setTimeout(() => {
+        setError("Aria is waking up, try again in a moment");
+      }, 15000);
       console.log("Connected to room successfully");
       // State moves to 'listening' via the onStateChange callback above
     } catch (err) {

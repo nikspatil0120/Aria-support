@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
 
     # Groq (free tier) - used for both STT and LLM
-    groq_api_key: str
+    groq_api_key: str | None = None
     groq_base_url: str = "https://api.groq.com/openai/v1"
     groq_stt_model: str = "whisper-large-v3-turbo"
     # 70b = reliable tool calling. If you hit rate limits, try llama-3.1-8b-instant
@@ -47,7 +47,7 @@ class Settings(BaseSettings):
             "http://localhost:3000",
             "http://localhost:8081",
         ]
-        return list(set(allowed_origins))  # Remove duplicates
+        return list(dict.fromkeys(allowed_origins))
 
 
 settings = Settings()

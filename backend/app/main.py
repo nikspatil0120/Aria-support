@@ -13,7 +13,7 @@ from app.core.errors import (
     general_exception_handler,
 )
 from app.db.database import init_db, AsyncSessionLocal
-from app.db.seed import seed_orders
+from app.db.seed import reset_demo_orders, seed_orders
 from app.api import health, orders, sessions, livekit
 
 # Setup logging
@@ -36,6 +36,7 @@ async def lifespan(app: FastAPI):
     # Seed orders
     async with AsyncSessionLocal() as db:
         await seed_orders(db)
+        await reset_demo_orders(db)
     
     logger.info("Application startup complete")
     
@@ -60,6 +61,7 @@ logger.info(f"CORS allowed origins: {allowed_origins}")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
+    allow_origin_regex=r"https://[a-z0-9-]+\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

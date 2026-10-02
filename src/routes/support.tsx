@@ -65,6 +65,7 @@ export function Support() {
   const [voiceMuted, setVoiceMuted] = useState(false);
   const [backendWaking, setBackendWaking] = useState(false);
   const [backendReady, setBackendReady] = useState<boolean | null>(null);
+  const [summaryError, setSummaryError] = useState(false);
   const current = stateContent[voice.state];
   const isActive = ["listening", "thinking", "speaking"].includes(voice.state);
 
@@ -90,10 +91,11 @@ export function Support() {
   useEffect(() => {
     if (voice.state === "disconnected" && voice.sessionId && !summary) {
       setSummaryLoading(true);
+      setSummaryError(false);
       
-      // Poll for summary every 2 seconds until found (max 50 attempts = 100 seconds)
+      // Poll for summary every 2 seconds while the agent persists it.
       let attempts = 0;
-      const maxAttempts = 50;
+      const maxAttempts = 10;
       
       const pollSummary = () => {
         attempts++;
@@ -112,6 +114,7 @@ export function Support() {
             } else {
               console.error("Max summary fetch attempts reached");
               setSummaryLoading(false);
+              setSummaryError(true);
             }
           });
       };
@@ -125,7 +128,9 @@ export function Support() {
     setSummaryLoading(false);
     
     // Check if backend is awake (Render free tier cold starts)
-    if (backendReady === false) {
+    const isBackendReady = backendReady ?? await checkHealth();
+    setBackendReady(isBackendReady);
+    if (!isBackendReady) {
       setBackendWaking(true);
       toast.info("Waking up the server, this can take up to a minute...");
       
@@ -206,6 +211,13 @@ export function Support() {
 
       <main className="mx-auto max-w-[1440px] px-4 pb-24 pt-7 sm:px-6 lg:px-10">
 
+        {backendWaking && (
+          <div className="mb-6 flex items-center gap-3 rounded-xl border border-primary/20 bg-primary/5 px-4 py-3 text-sm text-primary" role="status">
+            <Loader2 className="size-4 animate-spin" />
+            Waking up the server, this can take up to a minute...
+          </div>
+        )}
+
         {/* ── Error banner ── */}
         {voice.error && voice.state === "error" && (
           <div className="mb-6 flex items-center gap-3 rounded-xl border border-destructive/25 bg-destructive/6 px-4 py-3 text-sm text-destructive animate-fade-up">
@@ -251,6 +263,14 @@ export function Support() {
             </div>
           ) : summary ? (
             <CallSummaryView summary={summary} transcript={voice.transcript} onNewCall={start} />
+          ) : summaryError ? (
+            <div className="mx-auto max-w-2xl rounded-2xl border border-destructive/25 bg-card p-8 text-center shadow-soft">
+              <h3 className="font-display text-2xl">The summary is taking longer than expected</h3>
+              <p className="mt-2 text-sm text-muted-foreground">Your transcript is still available. Try fetching the summary again.</p>
+              <Button className="mt-5" onClick={() => { setSummaryError(false); setSummary(undefined); }}>
+                Retry summary
+              </Button>
+            </div>
           ) : null
         ) : (
           <>

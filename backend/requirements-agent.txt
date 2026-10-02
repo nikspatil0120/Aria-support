@@ -1,0 +1,11 @@
+python-dotenv==1.0.1
+pydantic>=2.12.5
+pydantic-settings==2.7.1
+sqlalchemy==2.0.36
+asyncpg==0.30.0
+httpx==0.28.1
+psutil==7.0.0
+livekit-agents[voice]==1.8.3
+livekit-plugins-openai==1.8.3
+livekit-plugins-silero==1.8.3
+edge-tts>=7.0.0

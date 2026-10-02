@@ -1,4 +1,18 @@
-# Python
+venv
+.venv
+__pycache__
+*.py[cod]
+*.db
+.env
+tests
+node_modules
+logs
+piper/
+*.onnx
+*.onnx.json
+*.pth
+*.bin
+*.pkl# Python
 __pycache__/
 *.py[cod]
 *$py.class

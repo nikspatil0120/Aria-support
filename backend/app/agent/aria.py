@@ -15,14 +15,17 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
-from datetime import datetime
+import os
+from datetime import datetime, timezone
 
 import httpx
+import psutil
 from livekit import rtc
 from livekit.agents import (
     AutoSubscribe,
     JobContext,
     JobProcess,
+    JobExecutorType,
     WorkerOptions,
     cli,
     function_tool,
@@ -44,6 +47,10 @@ from app.services.session_service import update_session_status
 from app.services.transcript_service import add_transcript_message
 
 logger = logging.getLogger(__name__)
+
+
+def _rss_mb() -> float:
+    return psutil.Process().memory_info().rss / 1024 / 1024
 
 # ---------------------------------------------------------------------------
 # Whisper hallucination filter
@@ -124,7 +131,7 @@ async def _persist_summary(session_id: str, summary: dict) -> None:
             session = await get_session(db, session_id)
             duration_seconds = None
             if session and session.started_at:
-                ended_at = datetime.utcnow()
+                ended_at = datetime.now(timezone.utc)
                 duration_seconds = int((ended_at - session.started_at).total_seconds())
             
             await create_summary(
@@ -136,7 +143,7 @@ async def _persist_summary(session_id: str, summary: dict) -> None:
                 order_id=summary.get("order_id"),
                 duration_seconds=duration_seconds,
             )
-            await update_session_status(db, session_id, SessionStatus.ENDED, ended_at=datetime.utcnow())
+            await update_session_status(db, session_id, SessionStatus.ENDED, ended_at=datetime.now(timezone.utc))
         logger.info(f"Summary persisted and session {session_id} marked ENDED")
     except Exception as exc:
         logger.error(f"Failed to persist summary for {session_id}: {exc}", exc_info=True)
@@ -156,6 +163,18 @@ def prewarm(proc: JobProcess) -> None:
 async def entrypoint(ctx: JobContext) -> None:
     room_name = ctx.room.name
     logger.info(f"Agent starting for room: {room_name}")
+    logger.info(f"[mem] rss={_rss_mb():.1f}MB")
+    peak_rss = _rss_mb()
+
+    async def _memory_monitor() -> None:
+        nonlocal peak_rss
+        while True:
+            await asyncio.sleep(30)
+            current_rss = _rss_mb()
+            peak_rss = max(peak_rss, current_rss)
+            logger.info(f"[mem] rss={current_rss:.1f}MB")
+
+    memory_monitor = asyncio.create_task(_memory_monitor())
 
     session_id: str | None = None
     if room_name.startswith("aria_support_"):
@@ -163,7 +182,7 @@ async def entrypoint(ctx: JobContext) -> None:
         try:
             async with AsyncSessionLocal() as db:
                 await update_session_status(
-                    db, session_id, SessionStatus.ACTIVE, started_at=datetime.utcnow()
+                    db, session_id, SessionStatus.ACTIVE, started_at=datetime.now(timezone.utc)
                 )
         except Exception as exc:
             logger.error(f"Failed to mark session active: {exc}")
@@ -566,6 +585,8 @@ async def entrypoint(ctx: JobContext) -> None:
 
     # ---- Summary when the room closes --------------------------------------
     async def _on_shutdown() -> None:
+        memory_monitor.cancel()
+        logger.info(f"[mem] peak_rss={peak_rss:.1f}MB")
         if not session_id:
             logger.warning("No session_id — skipping summary generation")
             return
@@ -588,14 +609,21 @@ async def entrypoint(ctx: JobContext) -> None:
 
 
 if __name__ == "__main__":
+    if not settings.groq_api_key:
+        raise RuntimeError("GROQ_API_KEY is required by the agent service")
+    if not os.environ.get("DATABASE_URL"):
+        raise RuntimeError("DATABASE_URL is required by the agent service")
     cli.run_app(
         WorkerOptions(
             entrypoint_fnc=entrypoint,
-            # prewarm_fnc=prewarm,  # DISABLED: Save memory on Render free tier
+            prewarm_fnc=prewarm,
+            job_executor_type=JobExecutorType.THREAD,
             api_key=settings.livekit_api_key,
             api_secret=settings.livekit_api_secret,
             ws_url=settings.livekit_url,
-            port=8090,
-            num_idle_processes=0,  # CHANGED: Don't pre-spawn processes (saves ~200MB)
+            host="0.0.0.0",
+            port=int(os.environ.get("PORT", "8090")),
+            load_threshold=0.7,
+            num_idle_processes=0,
         )
     )

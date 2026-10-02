@@ -3,9 +3,17 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.database import get_db
 from app.services.order_service import get_order_by_id, list_orders
+from app.db.seed import reset_demo_orders
 from app.schemas.order import OrderResponse
 
 router = APIRouter(prefix="/api/orders", tags=["orders"])
+
+
+@router.post("/reset")
+async def reset_orders(db: AsyncSession = Depends(get_db)):
+    """Restore the demo orders without removing other database records."""
+    await reset_demo_orders(db)
+    return {"status": "reset"}
 
 
 @router.get("/{order_id}", response_model=OrderResponse)

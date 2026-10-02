@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { ChevronDown, MapPin, PackageCheck, RefreshCw, Truck, XCircle, Box } from "lucide-react";
-import { getOrders } from "@/lib/api";
+import { ChevronDown, MapPin, PackageCheck, RefreshCw, Truck, XCircle, Box, RotateCcw } from "lucide-react";
+import { getOrders, resetDemoOrders } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import type { Order } from "@/types/support";
 
@@ -20,10 +20,28 @@ export function OrderPanel({ refreshTick = 0 }: { refreshTick?: number }) {
   const [openId, setOpenId] = useState<string>();
   const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(() => {
+  const refreshOrders = async () => {
     setRefreshing(true);
-    void getOrders().then(setOrders).finally(() => setRefreshing(false));
+    try {
+      setOrders(await getOrders());
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
+  useEffect(() => {
+    void refreshOrders();
   }, [refreshTick]);
+
+  const resetOrders = async () => {
+    setRefreshing(true);
+    try {
+      await resetDemoOrders();
+      setOrders(await getOrders());
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   return (
     <section aria-labelledby="orders-title">
@@ -38,6 +56,16 @@ export function OrderPanel({ refreshTick = 0 }: { refreshTick?: number }) {
           </h2>
         </div>
         <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => void resetOrders()}
+            disabled={refreshing}
+            className="inline-flex items-center gap-1.5 rounded-full border border-border/50 bg-muted/50 px-2.5 py-1 text-[10px] font-semibold text-muted-foreground transition-colors hover:bg-muted disabled:opacity-50"
+            title="Reset demo orders"
+          >
+            <RotateCcw className="size-3" />
+            Reset demo orders
+          </button>
           {refreshing && <RefreshCw className="size-3.5 animate-spin text-muted-foreground/60" />}
           <span className="rounded-full border border-border/50 bg-muted/50 px-2.5 py-1 text-[10px] font-semibold text-muted-foreground">
             {orders.length} orders

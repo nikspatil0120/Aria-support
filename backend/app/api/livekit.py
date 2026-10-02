@@ -7,7 +7,7 @@ from app.services.session_service import get_session, update_session_status
 from app.db.models import SessionStatus
 from app.schemas.session import LiveKitTokenRequest, LiveKitTokenResponse
 from app.config import settings
-from datetime import datetime
+from datetime import datetime, timezone
 
 router = APIRouter(prefix="/api/livekit", tags=["livekit"])
 
@@ -53,7 +53,7 @@ async def generate_livekit_token(
             db,
             request.session_id,
             SessionStatus.CONNECTING,
-            started_at=datetime.utcnow(),
+            started_at=datetime.now(timezone.utc),
         )
         
         return LiveKitTokenResponse(

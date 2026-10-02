@@ -38,6 +38,7 @@ backend/.env
 backend/aura_support.db
 backend/aura_support.db-shm
 backend/aura_support.db-wal
+*.db
 backend/*.log
 
 # Environment files
