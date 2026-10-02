@@ -26,7 +26,7 @@ async def lifespan(app: FastAPI):
     """Application lifespan events."""
     # Startup
     logger.info("Starting Aura Skincare AI Support Backend...")
-    logger.info(f"Database URL: {settings.database_url}")
+    logger.info("Database configured")
     logger.info(f"Frontend Origin: {settings.frontend_origin}")
     
     # Initialize database
