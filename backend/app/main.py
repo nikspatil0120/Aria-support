@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
+import asyncio
 from contextlib import asynccontextmanager
 
 from app.config import settings
@@ -29,14 +30,19 @@ async def lifespan(app: FastAPI):
     logger.info("Database configured")
     logger.info(f"Frontend Origin: {settings.frontend_origin}")
     
-    # Initialize database
-    await init_db()
-    logger.info("Database initialized")
-    
-    # Seed orders
-    async with AsyncSessionLocal() as db:
-        await seed_orders(db)
-        await reset_demo_orders(db)
+    async def initialize_database() -> None:
+        try:
+            await init_db()
+            logger.info("Database initialized")
+            async with AsyncSessionLocal() as db:
+                await seed_orders(db)
+                await reset_demo_orders(db)
+            logger.info("Demo orders initialized")
+        except Exception:
+            logger.exception("Database initialization failed")
+
+    database_task = asyncio.create_task(initialize_database())
+    logger.info("Database initialization started in background")
     
     logger.info("Application startup complete")
     
@@ -44,6 +50,7 @@ async def lifespan(app: FastAPI):
     
     # Shutdown
     logger.info("Shutting down application...")
+    await database_task
 
 
 # Create FastAPI app
