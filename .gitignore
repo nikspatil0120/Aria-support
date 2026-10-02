@@ -76,3 +76,4 @@ piper/
 # Development artifacts
 .lovable/
 claude/
+.neon
